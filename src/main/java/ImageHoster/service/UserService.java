@@ -32,4 +32,34 @@ public class UserService {
         }
     }
 
+    // This method checks the password strength and return boolean
+	public Boolean passwordCheck(String password){
+		Boolean letters = false;
+		Boolean numbers = false;
+		Boolean special = false;
+		int asc = 0;
+		for(int i=0;i<password.length();i++){
+		    asc = (int)password.charAt(i);
+			if((asc>=65 && asc<=90) || (asc>=97 && asc<=122)){
+				letters = true;
+			}
+			else if(asc>=48 && asc<=57){
+				numbers = true;
+			}
+			else if((asc>=33 && asc<=47) || (asc>=58 && asc<=126)){
+				special = true;
+			}
+			else{
+			
+			}	
+		}
+	
+		if(letters!=false && numbers!=false && special!=false){
+			return true;
+		}
+		else{
+			return false;
+		}
+       }
+
 }

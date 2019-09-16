@@ -45,5 +45,10 @@ public class ImageService {
     public void deleteImage(Integer imageId) {
         imageRepository.deleteImage(imageId);
     }
+    
+     // This method returns true if the given username matches with the owner of the image
+    public Boolean checkowner(Integer imageId,String logger){
+        return imageRepository.checkowner(imageId,logger);
+    }
 
 }

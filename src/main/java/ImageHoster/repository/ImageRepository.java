@@ -110,4 +110,21 @@ public class ImageRepository {
         }
     }
 
+   // This method checks whether the logger is the owner of the image or not
+    public Boolean checkowner(Integer id,String logger){
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Image> typedQuery = em.createQuery("SELECT i from Image i where i.id =:id ", Image.class).setParameter("id", id);
+            if(typedQuery.getSingleResult().getUser().getUsername() == logger){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (NoResultException nre) {
+            return false;
+        }
+
+    }
+
 }

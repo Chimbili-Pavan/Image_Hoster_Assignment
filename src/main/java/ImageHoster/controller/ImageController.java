@@ -1,8 +1,10 @@
 package ImageHoster.controller;
 
+import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
+import ImageHoster.service.CommentService;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,11 @@ public class ImageController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private CommentService commentservice;
+
+
+
     //This method displays all the images in the user home page after successful login
     @RequestMapping("images")
     public String getUserImages(Model model) {
@@ -47,9 +54,12 @@ public class ImageController {
     //this list is then sent to 'images/image.html' file and the tags are displayed
     @RequestMapping("/images/{id}/{title}")
     public String showImage(@PathVariable("id") Integer id,@PathVariable("title") String title, Model model) {
-        Image image = imageService.getImage(id);
+        Image image = imageService.getImageByTitle(id,title);
+        Comment comment = commentservice.getComments(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        model.addAttribute("comments",comment);
+
         return "images/image";
     }
 
@@ -106,7 +116,9 @@ public class ImageController {
         }
         else {
             String error = "Only the owner of the image can edit the image";
+            Comment comment = commentservice.getComments(imageId);
             model.addAttribute("editError",error);
+            model.addAttribute("comments",comment);
             return "images/image";
         }
 
@@ -161,8 +173,23 @@ public class ImageController {
         else{
             String error = "Only the owner of the image can delete the image";
             model.addAttribute("deleteError",error);
+            Comment comment = commentservice.getComments(imageId);
+            model.addAttribute("comments",comment);
             return "images/image";
         }
+    }
+
+    @RequestMapping(value="/image/{imageId}/{imageTitle}/comments", method = RequestMethod.POST)
+    public String uploadComments(@RequestParam(value = "comment") String comment,@PathVariable("imageId") Integer imageId,@PathVariable("imageTitle") String imageTitle,Model model,HttpSession session){
+        Image image = imageService.getImageByTitle(imageId,imageTitle);
+        User user = (User) session.getAttribute("loggeduser");
+        Comment newcomment = new Comment();
+        newcomment.setUser(user);
+        newcomment.setImage(image);
+        newcomment.setDate(new Date());
+        newcomment.setText(comment);
+        commentservice.uploadComments(newcomment);
+        return "redirect:/showImage/";
     }
 
 

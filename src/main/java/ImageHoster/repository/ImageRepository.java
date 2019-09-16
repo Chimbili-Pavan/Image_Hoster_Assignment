@@ -110,7 +110,7 @@ public class ImageRepository {
         }
     }
 
-   // This method checks whether the logger is the owner of the image or not
+    // This method checks whether the logger is the owner of the image or not
     public Boolean checkowner(Integer id,String logger){
         EntityManager em = emf.createEntityManager();
         try {
